@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Registration and Login</title>
+  <style>
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+    }
+    
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    
+    .form-container {
+      display: flex;
+      background-color: #fff;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      border-radius: 5px;
+      overflow: hidden;
+      max-width: 800px;
+      width: 100%;
+    }
+    
+    .form-container .form-left,
+    .form-container .form-right {
+      flex: 1;
+      padding: 40px;
+    }
+    
+    .form-container .form-left {
+      background-color: #4caf50;
+      color: #fff;
+    }
+    
+    .form-container .form-right {
+      background-color: #2196f3;
+      color: #fff;
+    }
+    
+    .form-container h2 {
+      margin-top: 0;
+      font-size: 24px;
+    }
+    
+    .form-container input[type="text"],
+    .form-container input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      border-radius: 3px;
+      border: none;
+    }
+    
+    .form-container button {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 3px;
+      background-color: #555;
+      color: #fff;
+      cursor: pointer;
+    }
+    
+    .form-container .google-btn {
+      background-color: #db3236;
+    }
+  </style>
+</head>
+<body>
+      {% include 'reminder_set/navbar.html' %}
+  <div class="container">
+    <div class="form-container">
+      <div class="form-left">
+        <h2>Register</h2>
+        <form method="POST" action="{% url 'goto_create_account' %}">
+            {% csrf_token %}
+          <button type="submit">Register</button>
+        </form>
+      </div>
+      <div class="form-right">
+        <h2>Login</h2>
+        <form method="post" action="">
+            {%csrf_token%}
+          <input type="text" placeholder="Username">
+          <input type="password" placeholder="Password">
+          <button type="submit">Login</button>
+          <button class="google-btn" type="button">Sign in with Google</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
