@@ -53,6 +53,7 @@
 </head>
 <body>
   {%include 'reminder_set/navbar.html'%}
+
   <div style="margin-top: 50px;">
   <h1>Create Account</h1>
   
@@ -65,29 +66,29 @@
     <input type="text" id="last-name" name="last-name" required>
     
     <label for="time-zone">Time Zone: *</label>
-    <select id="time-zone" name="time-zone" required>
-      <option value="">Select Time Zone</option>
-      <option value="GMT">GMT (Greenwich Mean Time)</option>
-      <option value="UTC">UTC (Coordinated Universal Time)</option>
-      <option value="EST">EST (Eastern Standard Time)</option>
-      <option value="CST">CST (Central Standard Time)</option>
-      <option value="MST">MST (Mountain Standard Time)</option>
-      <option value="PST">PST (Pacific Standard Time)</option>
-      <option value="IST">IST (Indian Standard Time)</option>
-      <!-- Add more options for other time zones -->
-    </select>
-    
-    <label for="country-code">Country Code: *</label>
-    <select id="country-code" name="country-code" required>
-      <option value="">Select Country Code</option>
-      <option value="+1">+1 (United States)</option>
-      <option value="+44">+44 (United Kingdom)</option>
-      <option value="+61">+61 (Australia)</option>
-      <option value="+86">+86 (China)</option>
-      <option value="+91">+91 (India)</option>
-      <option value="+81">+81 (Japan)</option>
-      <!-- Add more options for other country codes -->
-    </select>
+<select id="time-zone" name="time-zone" required>
+  <option value="" disabled selected>Select Time Zone</option>
+  <option value="GMT">GMT (Greenwich Mean Time)</option>
+  <option value="UTC">UTC (Coordinated Universal Time)</option>
+  <option value="EST">EST (Eastern Standard Time)</option>
+  <option value="CST">CST (Central Standard Time)</option>
+  <option value="MST">MST (Mountain Standard Time)</option>
+  <option value="PST">PST (Pacific Standard Time)</option>
+  <option value="IST">IST (Indian Standard Time)</option>
+  <!-- Add more options for other time zones -->
+</select>
+
+<label for="country-code">Country Code: *</label>
+<select id="country-code" name="country-code" required>
+  <option value="" disabled selected>Select Country Code</option>
+  <option value="+1">+1 (United States)</option>
+  <option value="+44">+44 (United Kingdom)</option>
+  <option value="+61">+61 (Australia)</option>
+  <option value="+86">+86 (China)</option>
+  <option value="+91">+91 (India)</option>
+  <option value="+81">+81 (Japan)</option>
+  <!-- Add more options for other country codes -->
+</select>
     
     <label for="phone-number">Phone Number: *</label>
     <input type="tel" id="phone-number" name="phone-number" required>
@@ -96,7 +97,7 @@
     <input type="email" id="email-address" name="email-address" required>
     
     <label for="password">Password: *</label>
-    <input type="password" id="password" name="password" required>
+    <input type="password" id="password" name="password" required placeholder="Password must be of 8 characters or more">
     
     <input type="submit" value="Create Account">
   </form>

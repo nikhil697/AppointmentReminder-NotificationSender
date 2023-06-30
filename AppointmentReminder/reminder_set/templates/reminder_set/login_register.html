@@ -74,23 +74,25 @@
 </head>
 <body>
       {% include 'reminder_set/navbar.html' %}
+
+
   <div class="container">
     <div class="form-container">
       <div class="form-left">
         <h2>Register</h2>
         <form method="POST" action="{% url 'goto_create_account' %}">
             {% csrf_token %}
-          <button type="submit">Register</button>
+          <button type="submit">Register here</button>
         </form>
       </div>
       <div class="form-right">
         <h2>Login</h2>
-        <form method="post" action="">
+        <form method="post" action="{% url 'personal' %}">
             {%csrf_token%}
-          <input type="text" placeholder="Username">
-          <input type="password" placeholder="Password">
+          <input type="text" placeholder="Email" name="email-address" required>
+          <input type="password" placeholder="Password" name="password" required>
           <button type="submit">Login</button>
-          <button class="google-btn" type="button">Sign in with Google</button>
+          <span class="psw"><a href="{% url 'reset_page' %}">Change Default Password</a></span>
         </form>
       </div>
     </div>

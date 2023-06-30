@@ -2,7 +2,11 @@ from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from .models import *
 import mysql.connector
+from django.db import connection,IntegrityError,transaction
 from django.core.mail import send_mail
+from django.contrib import messages
+from django.urls import reverse
+from mysql.connector import Error
 
 # Create your views here.
 
@@ -12,8 +16,16 @@ def loginpage(request):
 
 def register(request):
     if request.method == "POST":
-        return render(request,'reminder_set/create_account.html')
+        return render(request, 'reminder_set/create_account.html')
+    else:
+        return redirect('login')  # Redirect to the login page if not a POST request
 
+    
+
+def success_or_not(request):
+    message = request.GET.get('message')
+    return render(request, 'reminder_set/success_or_not.html', {'message': message})
+    
 
 def done_account(request):
     if request.method == "POST":
@@ -24,31 +36,145 @@ def done_account(request):
         phone_number = request.POST.get('phone-number')
         email_address = request.POST.get('email-address')
         password = request.POST.get('password')
-
-        # Create an Account object and save the values in the database
-        account = Account(
-            first_name=first_name,
-            last_name=last_name,
-            time_zone=time_zone,
-            country_code=country_code,
-            phone_number=phone_number,
-            email_address=email_address,
-            password=password
-        )
-        account.save(using='Appointment')
-
-        if account.pk:
+        
+        try:
+            Regis = Account(first_name=first_name,
+                    last_name=last_name,
+                    time_zone=time_zone,
+                    country_code=country_code,
+                    phone_number=phone_number,
+                    email_address=email_address,
+                    password=password)
+            Regis.full_clean()
+            Regis.save()            
             print("Account saved successfully")
+
             subject = 'Account Created'
-            message = 'Your account has been successfully created. You can now login to your Account'
+            message = f'Hello {first_name} {last_name},\n\nYour account has been successfully created. You can now login to your Account using your credentials.'
             from_email = 'nchadha_be21@thapar.edu'
             recipient_list = [email_address]
             send_mail(subject, message, from_email, recipient_list)
 
-            return redirect('login')
-        else:
-            # Account not saved
-            print("Account not saved successfully")
-            return redirect('create_account')  # Redirect to the create_account page
+            success_message = "Account Registered successfully"
+            return render(request, 'reminder_set/success_or_not.html', {'message': success_message})
+        except IntegrityError:
+            error_msg = "Email is already registered"
+        except Exception as e:
+            error_msg = "An error occurred: {}".format(str(e))
+        
+        return render(request, 'reminder_set/success_or_not.html', {'message': error_msg})
+        
+    else:
+        return render(request, 'reminder_set/create_account.html')
 
-    return render(request, 'reminder_set/create_account.html')
+
+def personal(request):
+    if request.method == 'POST':
+        email_address = request.POST.get('email-address')
+        password = request.POST.get('password')
+        
+        try:
+            conne = mysql.connector.connect(user='root', password='nikhil2002', host='localhost', database='Appointment')
+            cursor = conne.cursor()
+            
+            query = f"SELECT * FROM reminder_set_account WHERE email_address = '{email_address}' AND password = '{password}'"
+            cursor.execute(query)
+            user = cursor.fetchone()
+            
+            if user:
+                request.session['email_address'] = user[0] # assuming user_id is the first column in the table
+                conne.close()
+                
+                return render(request, 'reminder_set/personal.html')
+            else:
+                conne.close()
+                error_message = 'Invalid login credentials. Please try again.'
+                return render(request, 'reminder_set/success_or_not.html', {'message': error_message})
+        
+        except Error as e:
+            # Handle database connection or query errors
+            error_message = 'An error occurred while accessing the database: {}'.format(str(e))
+            return render(request, 'reminder_set/success_or_not.html', {'message': error_message})
+        
+    else:
+        # If request method is GET, show the login page
+        return render(request, 'reminder_set/login_register.html')
+    
+
+def resetpass(request):
+    return render(request, 'reminder_set/resetpass.html', {})
+
+def success(request):
+    return render(request, 'reminder_set/success_or_not.html', {'message': 'Password has been successfully reset'})
+
+def resetpassfunc(request):
+    if request.method == 'POST':
+        email_address = request.POST.get('email-address')
+        prevpass = request.POST.get('prevp')
+        newpass = request.POST.get('newpass')
+        conne = mysql.connector.connect(user='root', password='nikhil2002', host='localhost', database='Appointment')
+        cursor = conne.cursor()
+        query = f"UPDATE reminder_set_account SET password = '{newpass}' WHERE email_address = '{email_address}' AND password = '{prevpass}'"
+        cursor.execute(query)
+        if cursor.rowcount > 0:
+            # Password was successfully updated in the database
+            conne.commit()
+            conne.close()
+            message = 'Password Reset Successful'
+            return render(request, 'reminder_set/success_or_not.html', {'message': message})
+            
+        # render(request, 'sports_goods/resetsuccess.html', {})
+        else:
+            # Password could not be updated in the database
+            conne.rollback()
+            conne.close()
+            error_message = 'Invalid credentials. Please try again.'
+            return render(request, 'reminder_set/success_or_not.html', {'message': error_message})
+    else:
+        # if request method is GET, show the reset password page
+        return render(request, 'reminder_set/resetpass.html', {})
+    
+
+
+
+import mysql.connector
+
+def create_reminder(request):
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        date = request.POST.get('date')
+        time = request.POST.get('time')
+        description = request.POST.get('description')
+        
+        email = request.session.get('email_address')
+        conne = mysql.connector.connect(user='root', password='nikhil2002', host='localhost', database='Appointment')
+        cursor = conne.cursor()
+        query = f"SELECT email_address FROM reminder_set_account WHERE id = {email}"
+        cursor.execute(query)
+        result = cursor.fetchone()
+        
+        if result:
+            email_address = result[0]
+            
+            try:
+                # Create a new instance of CollectData
+                collect_data = collectdata(email_address=email_address, title=title, date=date, time=time, description=description)
+                
+                # Save the new instance to the database
+                collect_data.save()
+                
+                # Display success message
+                success_message = "Reminder Created Successfully"
+                return render(request, 'reminder_set/personal.html', {'message': success_message})
+            
+            except Exception as e:
+                error_message = f"An error occurred: {str(e)}"
+                return render(request, 'reminder_set/personal.html', {'message': error_message})
+        
+        else:
+            error_message = "Invalid account. Please login again."
+            return render(request, 'reminder_set/personal.html', {'message': error_message})
+    
+    else:
+        return render(request, 'reminder_set/personal.html')
+
