@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Appointment Reminder</title>
+  <style>
+    /* Reset default margin and padding */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      background-color: #333;
+      color: #fff;
+      padding: 20px;
+    }
+
+    header h1 {
+      margin: 0;
+    }
+
+    nav ul {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    nav ul li {
+      display: inline-block;
+      margin-right: 10px;
+    }
+
+    nav ul li a {
+      color: #fff;
+      text-decoration: none;
+    }
+
+    main {
+      flex: 1;
+      margin: 20px;
+    }
+
+    section {
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      margin-top: 0;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    li {
+      margin-bottom: 10px;
+    }
+
+    /* Form Styles */
+    form label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    form input[type="text"],
+    form input[type="date"],
+    form input[type="time"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+
+    form input[type="submit"] {
+      background-color: #333;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    form input[type="submit"]:hover {
+      background-color: #555;
+    }
+
+    /* Footer Styles */
+    footer {
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      padding: 10px;
+      margin-top: auto;
+    }
+
+    .appointment-container {
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    .appointment-tile {
+  width: calc(20% - 20px);
+  margin: 10px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f5f5f5;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+    .appointment-tile h3.title {
+      margin-top: 0;
+    }
+
+    .appointment-tile p {
+      margin: 5px 0;
+    }
+
+    .appointment-tile p span {
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <h1>Appointment Reminder</h1>
+      <nav>
+        <ul>
+          <li><a href="{% url 'login' %}">Login</a></li>
+          <li><a href="{% url 'personal' %}">Create</a></li>
+          <li><a href="{% url 'all_reminders' %}">All Reminders</a></li>
+        <li><a href="#">Logout</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <section>
+        <h2>All Reminders</h2>
+        <div class="appointment-container">
+          {% for reminder in reminders %}
+          <div class="appointment-tile">
+            <h3 class="title">{{ reminder.title }}</h3>
+            <p>Date: <span class="date">{{ reminder.date }}</span></p>
+            <p>Time: <span class="time">{{ reminder.time }}</span></p>
+            <p>Description: <span class="description">{{ reminder.description }}</span></p>
+            <a href="{% url 'delete_reminder' reminder.id %}" class="delete-icon">&#128465;</a>
+            <a href="{% url 'edit_reminder' reminder.id %}" class="edit-icon">&#9998;</a>
+    
+            <form action="{% url 'save_reminder' reminder.id %}" method="POST" class="edit-form" style="display: none;">
+              {% csrf_token %}
+              <label for="edit-title">Title:</label>
+              <input type="text" id="edit-title" name="edit-title" value="{{ reminder.title }}" required>
+    
+              <label for="id_date">Date:</label>
+              <input type="text" id="id_date" name="date" value="{{ reminder.date|date:'d m Y' }}" required>
+    
+              <label for="edit-time">Time:</label>
+              <input type="time" id="edit-time" name="edit-time" value="{{ reminder.time }}" required>
+    
+              <label for="edit-description">Description:</label>
+              <input type="text" id="edit-description" name="edit-description" value="{{ reminder.description }}" required>
+    
+              <input type="submit" value="Save">
+            </form>
+          </div>
+          {% endfor %}
+        </div>
+      </section>
+    </main>
+    
+    
+
+    <footer>
+      <p>&copy; 2023 Appointment Reminder. All rights reserved.</p>
+    </footer>
+  </div>
+</body>
+
+</html>
+
