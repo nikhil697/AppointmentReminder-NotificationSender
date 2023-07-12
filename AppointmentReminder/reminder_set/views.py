@@ -72,7 +72,7 @@ def done_account(request):
         return render(request, 'reminder_set/create_account.html')
 
 
-def personal(request):
+def login(request):
     if request.method == 'POST':
         email_address = request.POST.get('email-address')
         password = request.POST.get('password')
@@ -86,10 +86,11 @@ def personal(request):
             user = cursor.fetchone()
             
             if user:
-                request.session['email_address'] = user[0] # assuming user_id is the first column in the table
+                request.session['email_address'] = email_address
                 conne.close()
                 
-                return render(request, 'reminder_set/personal.html')
+                reminders = collectdata.objects.filter(email_address=email_address)[:4]
+                return render(request, 'reminder_set/personal.html', {'reminders': reminders})
             else:
                 conne.close()
                 error_message = 'Invalid login credentials. Please try again.'
@@ -103,6 +104,8 @@ def personal(request):
     else:
         # If request method is GET, show the login page
         return render(request, 'reminder_set/login_register.html')
+
+
     
 
 def resetpass(request):
@@ -148,10 +151,10 @@ def create_reminder(request):
         time = request.POST.get('time')
         description = request.POST.get('description')
         
-        email = request.session.get('email_address')
+        email_address = request.session.get('email_address')
         conne = mysql.connector.connect(user='root', password='nikhil2002', host='localhost', database='Appointment')
         cursor = conne.cursor()
-        query = f"SELECT email_address FROM reminder_set_account WHERE id = {email}"
+        query = f"SELECT email_address FROM reminder_set_account WHERE email_address = '{email_address}'"
         cursor.execute(query)
         result = cursor.fetchone()
         
@@ -184,7 +187,7 @@ def create_reminder(request):
         email_address = request.session.get('email_address')
         conne = mysql.connector.connect(user='root', password='nikhil2002', host='localhost', database='Appointment')
         cursor = conne.cursor()
-        query = f"SELECT email_address FROM reminder_set_account WHERE id = {email_address}"
+        query = f"SELECT email_address FROM reminder_set_account WHERE email_address = '{email_address}'"
         cursor.execute(query)
         result = cursor.fetchone()
 
@@ -196,23 +199,26 @@ def create_reminder(request):
             # Handle case when user is not logged in
             return render(request, 'reminder_set/personal.html', {'reminders': []})
 
-    
 
-def personal(request, message=None):
+    
+def personal(request):
     email_address = request.session.get('email_address')
     conne = mysql.connector.connect(user='root', password='nikhil2002', host='localhost', database='Appointment')
     cursor = conne.cursor()
-    query = f"SELECT email_address FROM reminder_set_account WHERE id = {email_address}"
+    query = f"SELECT email_address FROM reminder_set_account WHERE email_address = '{email_address}'"
     cursor.execute(query)
     result = cursor.fetchone()
 
     if result:
         email_address = result[0]
         reminders = collectdata.objects.filter(email_address=email_address)[:4]
-        return render(request, 'reminder_set/personal.html', {'reminders': reminders, 'message': message})
+        return render(request, 'reminder_set/personal.html', {'reminders': reminders})
     else:
-        # Handle case when user is not logged in
-        return render(request, 'reminder_set/personal.html', {'reminders': [], 'message': message})
+        # Handle case when user is not logged in or has no reminders
+        return render(request, 'reminder_set/personal.html', {'reminders': []})
+
+
+
 
 
 
@@ -220,7 +226,7 @@ def all_reminders(request):
     email_address = request.session.get('email_address')
     conne = mysql.connector.connect(user='root', password='nikhil2002', host='localhost', database='Appointment')
     cursor = conne.cursor()
-    query = f"SELECT email_address FROM reminder_set_account WHERE id = {email_address}"
+    query = f"SELECT email_address FROM reminder_set_account WHERE email_address = '{email_address}'"
     cursor.execute(query)
     result = cursor.fetchone()
 
@@ -230,7 +236,8 @@ def all_reminders(request):
         return render(request, 'reminder_set/all.html', {'reminders': reminders})
     else:
         # Handle case when user is not logged in or has no reminders
-        return render(request, 'reminder_set/personal.html', {'reminders': []})
+        return render(request, 'reminder_set/all.html', {'reminders': []})
+
     
 
 def delete_reminder(request, reminder_id):
@@ -242,137 +249,50 @@ def delete_reminder(request, reminder_id):
         # Handle case when the reminder doesn't exist
         return redirect('all_reminders')
     
-
-# def edit_reminder(request, reminder_id):
-#     try:
-#         # Retrieve the existing reminder from the database
-#         reminder = collectdata.objects.get(id=reminder_id)
-
-#         if request.method == 'POST':
-#             title = request.POST.get('edit-title')
-#             date = request.POST.get('edit-date')
-#             time = request.POST.get('edit-time')
-#             description = request.POST.get('edit-description')
-
-#             # Update the reminder fields with the new values
-#             # reminder.title = title
-#             # reminder.date = date
-#             # reminder.time = time
-#             # reminder.description = description
-#             conne=mysql.connector.connect(user='root', password='nikhil2002', host='localhost', database='Appointment')
-#             cursor = conne.cursor()
-#             query=f"update reminder_set_collectdata set title={title},date={date},time={time},description={description} where id={reminder_id}"
-#             cursor.execute(query)
-#             conne.commit()
-#             conne.close()
-
-#             # Save the updated reminder
-#             reminder.save()
-
-#             # Redirect to the personal page with a success message
-#             success_message = "Reminder updated successfully"
-#             return redirect('personal', message=success_message)
-
-#         else:
-#             return render(request, 'reminder_set/edit_reminder.html', {'reminder': reminder})
-
-#     except collectdata.DoesNotExist:
-#         # Handle case when the reminder does not exist
-#         error_message = "Reminder not found"
-#         return redirect('personal', message=error_message)
 def edit_reminder(request, reminder_id):
-    try:
-        reminder = collectdata.objects.get(id=reminder_id)
+    reminder = get_object_or_404(collectdata, id=reminder_id)
 
-        if request.method == 'POST':
-            form = CollectDataForm(request.POST, instance=reminder)
-            if form.is_valid():
-                form.save()
-                success_message = "Reminder updated successfully"
-                return redirect('personal', message=success_message)
-        else:
-            form = CollectDataForm(instance=reminder)
+    if request.method == 'POST':
+        form = CollectDataForm(request.POST, instance=reminder)
+        if form.is_valid():
+            form.save()
+            success_message = "Reminder updated successfully"
+            return redirect('all_reminders')
+    else:
+        form = CollectDataForm(instance=reminder)
 
-        return render(request, 'reminder_set/edit_reminder.html', {'form': form, 'reminder': reminder})
-
-    except collectdata.DoesNotExist:
-        error_message = "Reminder not found"
-        return redirect('personal', message=error_message)
-
-
-
-from datetime import datetime
-
-from django.shortcuts import render, redirect
-from .forms import CollectDataForm
-from .models import collectdata
-
-def save_reminder(request, reminder_id):
-    try:
-        reminder = collectdata.objects.get(id=reminder_id)
-        
-        if request.method == 'POST':
-            form = CollectDataForm(request.POST, instance=reminder)
-            
-            if form.is_valid():
-                form.save()
-                success_message = "Reminder updated successfully"
-                return redirect('personal')
-            else:
-                # Print form errors for debugging purposes
-                print(form.errors)
-        
-        else:
-            form = CollectDataForm(instance=reminder)
-        
-        return render(request, 'reminder_set/edit_reminder.html', {'form': form, 'reminder': reminder})
-
-    except collectdata.DoesNotExist:
-        error_message = "Reminder not found"
-        return redirect('personal', message=error_message)
+    return render(request, 'reminder_set/edit_reminder.html', {'form': form, 'reminder': reminder})
 
 
 
 
+# from datetime import datetime
 
-
-
-
+# from django.shortcuts import render, redirect
+# from .forms import CollectDataForm
+# from .models import collectdata
 
 # def save_reminder(request, reminder_id):
 #     try:
-#         # Retrieve the existing reminder from the database
 #         reminder = collectdata.objects.get(id=reminder_id)
-
+        
 #         if request.method == 'POST':
-#             title = request.POST.get('edit-title')
-#             date = request.POST.get('edit-date')
-#             time = request.POST.get('edit-time')
-#             description = request.POST.get('edit-description')
-
-#             # Update the reminder fields with the new values
-#             # reminder.title = title
-#             # reminder.date = date
-#             # reminder.time = time
-#             # reminder.description = description
-#             conne=mysql.connector.connect(user='root', password='nikhil2002', host='localhost', database='Appointment')
-#             cursor = conne.cursor()
-#             query=f"update reminder_set_collectdata set title={title},date={date},time={time},description={description} where id={reminder_id}"
-#             cursor.execute(query)
-#             conne.commit()
-#             conne.close()
-
-#             # Save the updated reminder
-#             reminder.save()
-
-#             # Redirect to the personal page with a success message
-#             success_message = "Reminder updated successfully"
-#             return redirect('personal', message=success_message)
-
+#             form = CollectDataForm(request.POST, instance=reminder)
+            
+#             if form.is_valid():
+#                 form.save()
+#                 success_message = "Reminder updated successfully"
+#                 return redirect('personal')
+#             else:
+#                 # Print form errors for debugging purposes
+#                 print(form.errors)
+        
 #         else:
-#             return render(request, 'reminder_set/edit_reminder.html', {'reminder': reminder})
+#             form = CollectDataForm(instance=reminder)
+        
+#         return render(request, 'reminder_set/edit_reminder.html', {'form': form, 'reminder': reminder})
 
 #     except collectdata.DoesNotExist:
-#         # Handle case when the reminder does not exist
 #         error_message = "Reminder not found"
 #         return redirect('personal', message=error_message)
+

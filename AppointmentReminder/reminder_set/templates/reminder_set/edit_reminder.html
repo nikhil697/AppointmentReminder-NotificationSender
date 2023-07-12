@@ -142,16 +142,17 @@
       </style>
 </head>
 <body>
-    <main>
-        <section>
-            <h2>Edit Reminder</h2>
-            <form action="{% url 'save_reminder' reminder.id %}" method="POST">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <input type="submit" value="Save Reminder">
-              </form>
-        </section>
-    </main>
+  <main>
+    <section>
+        <h2>Edit Reminder</h2>
+        <form action="{% url 'edit_reminder' reminder.id %}" method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="Save Reminder">
+        </form>
+    </section>
+</main>
+
         
         
         <footer>

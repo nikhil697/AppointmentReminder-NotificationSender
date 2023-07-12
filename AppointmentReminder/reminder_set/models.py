@@ -25,17 +25,3 @@ class collectdata(models.Model):
     def __str__(self):
         return self.title
     
-    # def save(self, *args, **kwargs):
-    #     account_sid = os.environ['ACaf4571de8a4cdb52f6398c6acf8eed6a']
-    #     auth_token = os.environ['b593cf441af57520a78ca5d87de42613']
-    #     client = Client(account_sid, auth_token)
-
-    #     message = client.messages.create(
-    #                                 body='Hi there',
-    #                                 from_='+14849929143',
-    #                                 to=''
-    #                             )
-
-    #     print(message.sid)
-
-    #     return super.save(*args,**kwargs)
