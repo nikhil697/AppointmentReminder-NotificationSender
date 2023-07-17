@@ -3,10 +3,11 @@
 <head>
   <title>Registration and Login</title>
   <style>
-
     body {
       font-family: Arial, sans-serif;
-      background-color: #f2f2f2;
+      background-image: url("https://removal.ai/wp-content/uploads/2021/05/image14-1.png");
+      background-repeat: no-repeat;
+      background-size: cover;
     }
     
     .container {
@@ -33,13 +34,13 @@
     }
     
     .form-container .form-left {
-      background-color: #4caf50;
-      color: #fff;
+      background-color: silver;
+      color: #000000;
     }
     
     .form-container .form-right {
-      background-color: #2196f3;
-      color: #fff;
+      background-color: #ffffff;
+      color: #000000;
     }
     
     .form-container h2 {
@@ -49,11 +50,23 @@
     
     .form-container input[type="text"],
     .form-container input[type="password"] {
-      width: 100%;
+      /* width: 100%;
       padding: 10px;
       margin-bottom: 20px;
-      border-radius: 3px;
+      border-radius: 0;
       border: none;
+      border-bottom: 1px solid #ccc; */
+      border: none;
+      border-bottom: 1px solid #000000;
+      background: inherit;
+      color: #000;
+      display: block;
+      width: 100%;
+      padding: 10px 0;
+      font: 16px 'Helvetica Neue', Helvetica, sans-serif;
+      color: #000000;
+      outline: none;
+      background-color: inherit;
     }
     
     .form-container button {
@@ -73,24 +86,23 @@
   </style>
 </head>
 <body>
-      {% include 'reminder_set/navbar.html' %}
-
+  {% include 'reminder_set/navbar.html' %}
 
   <div class="container">
     <div class="form-container">
       <div class="form-left">
-        <h2>Register</h2>
+        <h2><u><center>Register</center></u></h2>
         <form method="POST" action="{% url 'goto_create_account' %}">
-            {% csrf_token %}
+          {% csrf_token %}
           <button type="submit">Register here</button>
         </form>
       </div>
       <div class="form-right">
-        <h2>Login</h2>
+        <h2><u><center>Login</center></u></h2>
         <form method="post" action="{% url 'personal' %}">
-            {%csrf_token%}
+          {% csrf_token %}
           <input type="text" placeholder="Email" name="email-address" required>
-          <input type="password" placeholder="Password" name="password" required>
+          <input type="password" placeholder="Password" name="password" required><br>
           <button type="submit">Login</button>
           <span class="psw"><a href="{% url 'reset_page' %}">Change Default Password</a></span>
         </form>
