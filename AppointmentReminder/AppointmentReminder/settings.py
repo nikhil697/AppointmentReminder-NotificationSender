@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 from datetime import timedelta,timezone
 
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -135,3 +137,10 @@ EMAIL_HOST_USER='nchadha_be21@thapar.edu'
 EMAIL_HOST_PASSWORD='xddlyeyjtdtceqyi'
 EMAIL_USE_TLS=True
 
+# import threading
+# from reminder_script import send_reminders
+# import sys
+
+# # Start the send_reminders function in a separate thread when the server starts
+# if 'runserver' in sys.argv:
+#     threading.Thread(target=send_reminders).start()

@@ -9,6 +9,7 @@ from django.urls import reverse
 from mysql.connector import Error
 from .forms import CollectDataForm
 from django.contrib import messages
+from datetime import datetime
 
 
 
@@ -144,11 +145,68 @@ def resetpassfunc(request):
 
 
 
+# def create_reminder(request):
+#     if request.method == 'POST':
+#         title = request.POST.get('title')
+#         date = request.POST.get('date')
+#         time = request.POST.get('time')
+#         description = request.POST.get('description')
+        
+#         email_address = request.session.get('email_address')
+#         conne = mysql.connector.connect(user='root', password='nikhil2002', host='localhost', database='Appointment')
+#         cursor = conne.cursor()
+#         query = f"SELECT email_address FROM reminder_set_account WHERE email_address = '{email_address}'"
+#         cursor.execute(query)
+#         result = cursor.fetchone()
+        
+#         if result:
+#             email_address = result[0]
+            
+#             try:
+#                 # Create a new instance of CollectData
+#                 collect_data = collectdata(email_address=email_address, title=title, date=date, time=time, description=description)
+                
+#                 # Save the new instance to the database
+#                 collect_data.save()
+                
+#                 # Fetch reminders
+#                 reminders = collectdata.objects.filter(email_address=email_address)[:4]
+                
+#                 # Display success message and reminders
+#                 success_message = "Reminder Created Successfully"
+#                 return render(request, 'reminder_set/personal.html', {'message': success_message, 'reminders': reminders})
+            
+#             except Exception as e:
+#                 error_message = f"An error occurred: {str(e)}"
+#                 return render(request, 'reminder_set/personal.html', {'message': error_message})
+        
+#         else:
+#             error_message = "Invalid account. Please login again."
+#             return render(request, 'reminder_set/personal.html', {'message': error_message})
+    
+#     else:
+#         email_address = request.session.get('email_address')
+#         conne = mysql.connector.connect(user='root', password='nikhil2002', host='localhost', database='Appointment')
+#         cursor = conne.cursor()
+#         query = f"SELECT email_address FROM reminder_set_account WHERE email_address = '{email_address}'"
+#         cursor.execute(query)
+#         result = cursor.fetchone()
+
+#         if result:
+#             email_address = result[0]
+#             reminders = collectdata.objects.filter(email_address=email_address)[:4]
+#             return render(request, 'reminder_set/personal.html', {'reminders': reminders})
+#         else:
+#             # Handle case when user is not logged in
+#             return render(request, 'reminder_set/personal.html', {'reminders': []})
+
+from datetime import datetime, date, time
+
 def create_reminder(request):
     if request.method == 'POST':
         title = request.POST.get('title')
-        date = request.POST.get('date')
-        time = request.POST.get('time')
+        date_str = request.POST.get('date')
+        time_str = request.POST.get('time')
         description = request.POST.get('description')
         
         email_address = request.session.get('email_address')
@@ -161,9 +219,25 @@ def create_reminder(request):
         if result:
             email_address = result[0]
             
+            # Convert date and time strings to date and time objects
+            date_obj = date.fromisoformat(date_str)
+            time_obj = time.fromisoformat(time_str)
+            
+            # Get the reminder datetime
+            reminder_datetime = datetime.combine(date_obj, time_obj)
+            
+            # Get the current datetime
+            current_datetime = datetime.now()
+            
+            # Compare reminder datetime with current datetime
+            if reminder_datetime < current_datetime:
+                # Display error message when reminder datetime is in the past
+                error_message = "Reminder datetime cannot be in the past."
+                return render(request, 'reminder_set/personal.html', {'message': error_message})
+            
             try:
                 # Create a new instance of CollectData
-                collect_data = collectdata(email_address=email_address, title=title, date=date, time=time, description=description)
+                collect_data = collectdata(email_address=email_address, title=title, date=date_obj, time=time_obj, description=description)
                 
                 # Save the new instance to the database
                 collect_data.save()
@@ -198,6 +272,9 @@ def create_reminder(request):
         else:
             # Handle case when user is not logged in
             return render(request, 'reminder_set/personal.html', {'reminders': []})
+
+
+
 
 
     
