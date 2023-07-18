@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Appointment Reminder</title>
+  <style>
+    /* Reset default margin and padding */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-image: url("https://removal.ai/wp-content/uploads/2021/05/image14-1.png");
+      background-repeat: no-repeat;
+      background-size: cover;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      background-color: #333;
+      color: #fff;
+      padding: 20px;
+    }
+
+    header h1 {
+      margin: 0;
+    }
+
+    nav ul {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    nav ul li {
+      display: inline-block;
+      margin-right: 10px;
+    }
+
+    nav ul li a {
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: auto;
+      margin-top: 25px; /* Adjust the margin value to create space below the navbar */
+      padding: 20px;
+      flex-grow: 1;
+    }
+
+    h1 {
+      color: #fff;
+    }
+
+    .new12 {
+      color: #333;
+      text-align: center;
+    }
+
+    p {
+      margin-bottom: 20px;
+      line-height: 1.5;
+      font-size: 20px7;
+    }
+
+    .contact-info {
+      margin-top: 40px;
+      background-color: transparent;
+      border-radius: 5px;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 1);
+      padding: 20px;
+    }
+
+    footer {
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      padding: 10px;
+      margin-top: auto;
+      height: 45px;
+    }
+
+    .contact-info p {
+      margin-bottom: 10px;
+    }
+
+    .contact-info strong {
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Appointment Reminder</h1>
+    <nav>
+      <ul>
+        <li><a href="{% url 'login' %}">Login</a></li>
+        <li><a href="{% url 'tilecreate' %}">Create</a></li>
+        <li><a href="{% url 'all_reminders' %}">All Reminders</a></li>
+        <li><a href="{% url 'aboutus' %}">About Us</a></li>
+      </ul>
+    </nav>
+  </header>
+  <div class="container">
+    <h1 class="new12">Appointment Reminder</h1><br>
+    <p><b>Welcome</b> to Appointment Reminder, a powerful tool designed to help you manage and organize your appointments and reminders effectively. With our user-friendly interface and advanced features, staying on top of your schedule has never been easier.</p>
+    <p>Our application offers a seamless and intuitive experience, allowing you to create, view, and manage your appointments with just a few clicks. Whether you have important business meetings, medical appointments, or personal events, our application provides a comprehensive solution to keep you organized and ensure you never miss a thing.</p>
+    <p>Our mission is to simplify your life by providing a reliable and efficient appointment management system. We understand the importance of staying organized and on-time, and our application is designed to assist you in achieving just that.</p>
+    <div class="contact-info">
+      <h2>Contact Information</h2>
+      <p><strong>Phone:</strong> XXXXXXXXXX</p>
+      <p><strong>Email:</strong> nchadha_be21@thapar.edu</p>
+      <p><strong>Address:</strong> XXXX</p>
+    </div>
+  </div>
+  <footer>
+    <p>&copy; 2023 Appointment Reminder. All rights reserved.</p>
+  </footer>
+
+</body>
+
+</html>

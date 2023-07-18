@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>Create Account</title>
   <style>
@@ -54,12 +55,60 @@
       color: #fff;
       cursor: pointer;
     }
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: #333;
+      color: #fff;
+      padding: 17px;
+    }
+
+    header h1 {
+      margin: 0;
+      text-align: left;
+    }
+
+    nav ul {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    nav ul li {
+      display: inline-block;
+      margin-right: 10px;
+    }
+
+    nav ul li a {
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: auto;
+      margin-top: 55px; /* Adjust the margin value to create space below the navbar */
+      padding: 20px;
+      flex-grow: 1;
+    }
   </style>
 </head>
 <body>
-  {%include 'reminder_set/navbar.html'%}
+  <header>
+    <h1>Appointment Reminder</h1>
+    <nav>
+      <ul>
+        <li><a href="{% url 'login' %}">Login</a></li>
+        <!-- <li><a href="{% url 'tilecreate' %}">Create</a></li>
+        <li><a href="{% url 'all_reminders' %}">All Reminders</a></li> -->
+        <li><a href="{% url 'aboutus' %}">About Us</a></li>
+      </ul>
+    </nav>
+  </header>
 
-  <div style="margin-top: 50px;">
+  <div class="container">
   <h1>Create Account</h1>
   
   <form method="post" action="{% url 'created_account' %}">

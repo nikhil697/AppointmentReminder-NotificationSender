@@ -17,4 +17,5 @@ urlpatterns = [
     path('delete/<int:reminder_id>/', delete_reminder, name='delete_reminder'),
     path('edit/<int:reminder_id>/', edit_reminder, name='edit_reminder'),
     # path('save/<int:reminder_id>/', save_reminder, name='save_reminder'),
+    path('aboutus/', about_view, name='aboutus'),
 ]

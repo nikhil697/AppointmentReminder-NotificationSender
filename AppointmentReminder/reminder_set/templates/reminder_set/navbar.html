@@ -3,58 +3,58 @@
 <head>
   <title>Registration and Login</title>
   <style>
+    /* Navbar Style starts here */
+    body {
+      margin: 0;
+      padding: 0;
+    }
 
-/*navbar Style starts here*/
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: #333;
+      color: #fff;
+      padding: 20px;
+    }
 
-body {
-  margin: 0;
-  padding: 0;
-}
+    header h1 {
+      margin: 0;
+    }
 
-.navbar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background-color: #333;
-    color: #fff;
-  }
-  
-  .navbar ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-  }
-  
-  .navbar li {
-    float: left;
-  }
-  
-  .navbar li a {
-    display: block;
-    padding: 15px;
-    text-decoration: none;
-    color: #fff;
-  }
-  
-  .navbar li a:hover {
-    background-color: #555;
-  }
-  
-  .content {
-    margin-top: 50px; /* Adjust this value to add space below the fixed navbar */
-  }
-</style>
+    nav ul {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    nav ul li {
+      display: inline-block;
+      margin-right: 10px;
+    }
+
+    nav ul li a {
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .content {
+      margin-top: 80px; /* Adjust this value to add space below the fixed navbar */
+    }
+  </style>
 </head>
 <body>
-    <div class="navbar">
-        <ul>
-          <li><a href="{% url 'login' %}">Login</a></li>
-          <li><a href="{% url 'tilecreate' %}">Create</a></li>
-          <li><a href="{% url 'all_reminders' %}">All Reminders</a></li>
-          <li><a href="#">Contact</a></li>
-        </ul>
-      </div>
+  <header>
+    <h1>Appointment Reminder</h1>
+    <nav>
+      <ul>
+        <li><a href="{% url 'login' %}">Login</a></li>
+        <li><a href="{% url 'tilecreate' %}">Create</a></li>
+        <li><a href="{% url 'all_reminders' %}">All Reminders</a></li>
+        <li><a href="{% url 'aboutus' %}">About Us</a></li>
+      </ul>
+    </nav>
+  </header>
     </body>
     </html>

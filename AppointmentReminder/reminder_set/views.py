@@ -8,8 +8,8 @@ from django.contrib import messages
 from django.urls import reverse
 from mysql.connector import Error
 from .forms import CollectDataForm
-from django.contrib import messages
 from datetime import datetime
+from django.contrib.auth import logout
 
 
 
@@ -373,3 +373,5 @@ def edit_reminder(request, reminder_id):
 #         error_message = "Reminder not found"
 #         return redirect('personal', message=error_message)
 
+def about_view(request):
+    return render(request,'reminder_set/aboutus.html')
